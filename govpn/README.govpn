@@ -1,0 +1,52 @@
+=======
+:GoVPN:
+=======
+GoVPN is based on the idea of openVPN, written in golang, which inherently
+supports concurrency.
+OpenVPN had some major constraints:
+- process level limitations: it would drop packets once the speed approaches
+  150mbps. This is esp a problem in cloud env.
+- single threaded.
+- exporting stats to external collectors; esp imp events like dropped packets.
+- certificate revokation policy (some fault with current PKI too here!)
+
+GoVPN tries to solve these problems by making the system:
+- scale: make a single process do as much as possible:
+    multi-threading/goroutines are planned to be supported from day zero
+- exporting rich stats to external collectors so that we can know about the
+  process characteristics
+
+Plan Of Action:
+---------------
+  TCP client-server
+  UDP client-server
+  CLI flag and/or config file parsing
+  Support tun interfaces - L3 VPN.
+    Routing rules.
+    Iptables?
+  Support tap interfaces - L2 VPN.
+    Routing rules?
+  TCP keep alive
+  Create ipp.txt
+  Use certificates - encryption & authentication
+  Use hmac - validate each message
+  Use pprof, testing package, gofmt -s -w file.go
+  Readme - specify openvpn port, linux license
+  To debug golang code using gdb: go build -gcflags "-N" src/ionosnetworks.com/adx/ad-service/ad_service_main.go; gdb ./ad_service_main
+  https://github.com/coreos/go-iptables
+  Go text templates for custom log files
+  Crude packet DPI for now. Support for plugins in the long term that supports DPI based on packet data
+  Hot reload of config (like HAProxy does!)
+  keepalive=<keepalive params?> support
+
+    push                  "route-gateway 192.168.0.1"
+    topology              subnet
+    nice                  -19
+    txqueuelen            100
+    sndbuf                4096
+    rcvbuf                4096
+    tun-mtu               1400
+    # for HA of CA
+    duplicate-cn
+  Log to kafka on severe errors or interesting events!
+
