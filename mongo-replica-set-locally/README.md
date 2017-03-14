@@ -21,30 +21,45 @@ Since, we are running locally, we need to supply different port
 numbers to the mongo containers.
 
 ```
+sudo rm -rf /tmp/mdb1
+mkdir /tmp/mdb1
 docker run \
 --name=mdb1 \
 --publish=17017:17017 \
 --rm=true \
+--cap-add=FOWNER \
+--volume=/tmp/mdb1/db:/data/db \
+--volume=/tmp/mdb1/configdb:/data/configdb \
 krish7919/mdb \
 --replica-set-name test-repl-set \
 --port 17017
 ```
 
 ```
+sudo rm -rf /tmp/mdb2
+mkdir /tmp/mdb2
 docker run \
 --name=mdb2 \
 --publish=27017:27017 \
 --rm=true \
+--cap-add=FOWNER \
+--volume=/tmp/mdb2/db:/data/db \
+--volume=/tmp/mdb2/configdb:/data/configdb \
 krish7919/mdb \
 -replica-set-name test-repl-set \
 -port 27017
 ```
 
 ```
+sudo rm -rf /tmp/mdb3
+mkdir /tmp/mdb3
 docker run \
 --name=mdb3 \
 --publish=37017:37017 \
 --rm=true \
+--cap-add=FOWNER \
+--volume=/tmp/mdb3/db:/data/db \
+--volume=/tmp/mdb3/configdb:/data/configdb \
 krish7919/mdb \
 -replica-set-name test-repl-set \
 -port 37017
